@@ -41,6 +41,23 @@ Bachupally • Miyapur • Secunderabad (designed for multi-city expansion)
 | Storage | Cloudinary |
 | AI/NLP | Natural.js (TF-IDF, fake review detection) |
 
+## 📸 Project Screenshots
+
+<p align="center">
+  <img src="Screenshots/Homepage.png" width="45%">
+  <img src="Screenshots/Services.png" width="45%">
+</p>
+
+<p align="center">
+  <img src="Screenshots/community.png" width="45%">
+  <img src="Screenshots/Community%20Member.png" width="45%">
+</p>
+
+<p align="center">
+  <img src="Screenshots/NewcomerDashboard.png" width="45%">
+  <img src="Screenshots/ProviderDashboard.png" width="45%">
+</p>
+
 ## Quick Start
 
 ### Prerequisites
