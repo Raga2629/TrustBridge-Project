@@ -1,0 +1,14 @@
+{
+  "name": "trustbridge",
+  "version": "1.0.0",
+  "description": "TrustBridge - Trusted Local Assistance Platform for Newcomers",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install --prefix server && npm install --prefix client",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "dev": "npm run dev:server",
+    "seed": "npm run seed --prefix server",
+    "start:server": "npm start --prefix server"
+  }
+}
