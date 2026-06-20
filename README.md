@@ -66,18 +66,6 @@ npm run dev:server
 npm run dev:client
 ```
 
-- Frontend: http://localhost:5173
-- Backend API: http://localhost:5000/api
-- Health check: http://localhost:5000/api/health
-
-### Demo Accounts
-
-| Role | Email | Password |
-|------|-------|----------|
-| Admin | admin@trustbridge.com | admin123 |
-| Newcomer | priya@example.com | password123 |
-| Resident | rajesh@example.com | password123 |
-| Provider | anil@example.com | password123 |
 
 ## Project Structure
 

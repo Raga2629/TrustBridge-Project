@@ -113,7 +113,7 @@ export default function HomePage() {
               </h1>
 
               <p style={{ fontSize: 16, color: "#94a3b8", lineHeight: 1.75, maxWidth: 420, margin: "0 0 36px" }}>
-                Connect with <strong style={{ color: "#e2e8f0", fontWeight: 600 }}>ID-verified local residents</strong>,
+                Connect with <strong style={{ color: "#e2e8f0", fontWeight: 600 }}>local residents</strong>,
                 book trusted services, and get real community support.
               </p>
 
