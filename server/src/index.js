@@ -80,9 +80,14 @@ app.use('/uploads', express.static(UPLOADS_DIR));
 
 app.get("/check-uploads", (req, res) => {
   try {
-    const files = fs.readdirSync(UPLOADS_DIR);
+    const servicesPath = path.join(UPLOADS_DIR, "services");
+
+    const files = fs.readdirSync(servicesPath);
+
     res.json({
       uploadsDir: UPLOADS_DIR,
+      servicesPath,
+      totalFiles: files.length,
       files
     });
   } catch (err) {
