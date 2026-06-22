@@ -63,7 +63,22 @@ const io = new Server(httpServer, {
 
 app.set('io', io);
 
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false
+  })
+);
+app.use((req, res, next) => {
+  res.removeHeader("Cross-Origin-Resource-Policy");
+  res.removeHeader("Cross-Origin-Opener-Policy");
+
+  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+  res.setHeader("Cross-Origin-Opener-Policy", "unsafe-none");
+
+  console.log("CORS IMAGE HEADERS APPLIED");
+  next();
+});
+
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:5173',
   credentials: true,
