@@ -27,6 +27,7 @@ import notificationRoutes from './routes/notification.routes.js';
 import rewardRoutes from './routes/reward.routes.js';
 import adminRoutes from './routes/admin.routes.js';
 import contactRoutes from './routes/contact.routes.js';
+import fs from "fs";
 
 dotenv.config();
 
@@ -76,6 +77,20 @@ console.log("UPLOADS_DIR =", UPLOADS_DIR);
 console.log("Serving uploads from:", UPLOADS_DIR);
 
 app.use('/uploads', express.static(UPLOADS_DIR));
+
+app.get("/check-uploads", (req, res) => {
+  try {
+    const files = fs.readdirSync(UPLOADS_DIR);
+    res.json({
+      uploadsDir: UPLOADS_DIR,
+      files
+    });
+  } catch (err) {
+    res.json({
+      error: err.message
+    });
+  }
+});
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
