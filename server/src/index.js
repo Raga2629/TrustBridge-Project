@@ -72,6 +72,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Serve uploaded files (dev mode — no Cloudinary needed)
+console.log("UPLOADS_DIR =", UPLOADS_DIR);
+console.log("Serving uploads from:", UPLOADS_DIR);
+
 app.use('/uploads', express.static(UPLOADS_DIR));
 
 const limiter = rateLimit({
