@@ -1,6 +1,7 @@
 ﻿import { motion } from "framer-motion";
 import { Star, MapPin, Shield, ArrowRight, TrendingUp, TrendingDown, Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import { getImageUrl } from "../../services/api";
 
 const CAT_FALLBACKS = {
   "Restaurants":    "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=400&fit=crop",
@@ -31,18 +32,12 @@ export function ServiceCard({ service, index=0 }) {
       className="card flex flex-col h-full overflow-hidden group"
     >
       <div className="relative h-44 shrink-0 overflow-hidden bg-slate-100">
-        {/* <Img src={service.images?.[0]} alt={service.title} category={service.category}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" /> */}
-         <Img
-  src={
-    service.images?.[0]
-      ? `https://trustbridge-backend-ma37.onrender.com${service.images[0]}`
-      : null
-  }
-  alt={service.title}
-  category={service.category}
-  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-/>
+        <Img
+          src={service.images?.[0] ? getImageUrl(service.images[0]) : null}
+          alt={service.title}
+          category={service.category}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
         {service.isFeatured && (
           <span className="absolute top-2.5 left-2.5 badge badge-amber text-[11px]">Featured</span>

@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, MapPin, Calendar, Shield, MessageCircle, ArrowLeft, X, ChevronRight, CheckCircle, Phone, Globe, Clock, Mail } from "lucide-react";
 import toast from "react-hot-toast";
-import { serviceAPI, bookingAPI, reviewAPI } from "../services/api";
+import { serviceAPI, bookingAPI, reviewAPI, getImageUrl } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import { LoadingSpinner } from "../components/ui/Cards";
 
@@ -256,7 +256,9 @@ function PhotoUpload({ photos, setPhotos }) {
 
 // ─── Image Gallery with carousel ─────────────────────────────────────────────
 function ImageGallery({ images, category, title }) {
-  const validImgs = (images || []).filter(u => u && !u.includes('placehold.co'));
+  const validImgs = (images || [])
+    .filter(u => u && !u.includes('placehold.co'))
+    .map(getImageUrl);
   const fallback  = DETAIL_CAT_IMGS[category] || IMG;
   const allImgs   = validImgs.length > 0 ? validImgs : [fallback];
 
@@ -696,10 +698,10 @@ export default function ServiceDetailPage() {
                   {rv.images?.length > 0 && (
                     <div style={{ display:"flex", gap:8, flexWrap:"wrap", marginTop:10 }}>
                       {rv.images.map((url, imgIdx) => (
-                        <a key={imgIdx} href={url} target="_blank" rel="noopener noreferrer"
+                        <a key={imgIdx} href={getImageUrl(url)} target="_blank" rel="noopener noreferrer"
                           style={{ display:"block", width:80, height:80, borderRadius:8,
                             overflow:"hidden", background:"#f1f5f9", flexShrink:0 }}>
-                          <img src={url} alt={`Review photo ${imgIdx+1}`}
+                          <img src={getImageUrl(url)} alt={`Review photo ${imgIdx+1}`}
                             style={{ width:"100%", height:"100%", objectFit:"cover",
                               transition:"transform 0.2s" }}
                             onMouseEnter={e => e.target.style.transform="scale(1.05)"}

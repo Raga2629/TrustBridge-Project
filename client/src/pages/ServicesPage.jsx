@@ -6,7 +6,7 @@ import {
   Clock, ChevronRight, SlidersHorizontal, Sparkles,
   TrendingUp, Plus, CheckCircle, ArrowRight, Zap
 } from "lucide-react";
-import { serviceAPI } from "../services/api";
+import { serviceAPI, getImageUrl } from "../services/api";
 import { LoadingSpinner } from "../components/ui/Cards";
 
 // ─── category config ──────────────────────────────────────────────────────────
@@ -48,7 +48,7 @@ const CAT_IMGS = {
 };
 // Generic business fallback — not a house/property
 const FALLBACK_IMG = "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop";
-const getImg = (svc) => svc.images?.[0] || CAT_IMGS[svc.category] || FALLBACK_IMG;
+const getImg = (svc) => getImageUrl(svc.images?.[0]) || CAT_IMGS[svc.category] || FALLBACK_IMG;
 
 // ─── trust score helper ───────────────────────────────────────────────────────
 function trustScore(svc) {

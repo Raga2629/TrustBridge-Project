@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+﻿import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Building2, Calendar, TrendingUp, CreditCard, Plus, X,
@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
-import { providerAPI, serviceAPI, bookingAPI, paymentAPI, authAPI } from "../../services/api";
+import { providerAPI, serviceAPI, bookingAPI, paymentAPI, authAPI, getImageUrl } from "../../services/api";
 import api from "../../services/api";
 import { LoadingSpinner, EmptyState } from "../../components/ui/Cards";
 import { useAuth } from "../../context/AuthContext";
@@ -24,7 +24,7 @@ function isRealImage(url) {
 }
 
 
-/* ── constants ── */
+/* ΓöÇΓöÇ constants ΓöÇΓöÇ */
 const CATS = ["Medical","Clinics","Grocery Stores","Restaurants","Hostels","Pharmacies","Education","Transportation"];
 const LOCS = ["Bachupally","Miyapur","Secunderabad"];
 const TABS = ["Services","Bookings","Analytics"];
@@ -33,7 +33,7 @@ const WORKFLOW_LABELS = {
   draft:          { label:"Draft",             color:"#94a3b8", bg:"#f1f5f9" },
   docs_pending:   { label:"Docs Needed",       color:"#d97706", bg:"#fffbeb" },
   docs_uploaded:  { label:"Docs Uploaded",     color:"#2563eb", bg:"#eff6ff" },
-  verifying:      { label:"Verifying…",        color:"#7c3aed", bg:"#faf5ff" },
+  verifying:      { label:"VerifyingΓÇª",        color:"#7c3aed", bg:"#faf5ff" },
   verified:       { label:"Docs Verified",     color:"#16a34a", bg:"#f0fdf4" },
   payment_pending:{ label:"Payment Needed",    color:"#d97706", bg:"#fffbeb" },
   admin_review:   { label:"Under Review",      color:"#2563eb", bg:"#eff6ff" },
@@ -42,21 +42,21 @@ const WORKFLOW_LABELS = {
   paused:         { label:"Paused",            color:"#64748b", bg:"#f8fafc" },
 };
 
-// Plans are loaded from backend — these are fallback dev prices only
+// Plans are loaded from backend ΓÇö these are fallback dev prices only
 // Real prices come from GET /payments/plans which uses NODE_ENV to pick correct prices
 const PLANS_STATIC_DEFAULT = [
   {
-    key: "basic",   name: "Basic",   priceNum: 8,    price: "₹8",    period: "/month",
+    key: "basic",   name: "Basic",   priceNum: 8,    price: "Γé╣8",    period: "/month",
     highlight: false, badge: null,
     features: ["Service listing","Standard visibility","Email support","Up to 5 bookings/month"],
   },
   {
-    key: "growth",  name: "Growth",  priceNum: 10,   price: "₹10",   period: "/month",
+    key: "growth",  name: "Growth",  priceNum: 10,   price: "Γé╣10",   period: "/month",
     highlight: true,  badge: "Popular",
     features: ["Priority listing","Analytics dashboard","Featured badge","Unlimited bookings","Phone support"],
   },
   {
-    key: "premium", name: "Premium", priceNum: 15,   price: "₹15",   period: "/month",
+    key: "premium", name: "Premium", priceNum: 15,   price: "Γé╣15",   period: "/month",
     highlight: false, badge: "Best Value",
     features: ["Top placement","Unlimited bookings","Premium support","Featured badge","Advanced analytics","Custom profile page"],
   },
@@ -72,7 +72,7 @@ function usePlans() {
           key,
           name:     p.name,
           priceNum: p.price,
-          price:    `₹${p.price}`,
+          price:    `Γé╣${p.price}`,
           period:   "/month",
           highlight: key === "growth",
           badge:    key === "growth" ? "Popular" : key === "premium" ? "Best Value" : null,
@@ -87,7 +87,7 @@ function usePlans() {
 
 const PLANS_STATIC = PLANS_STATIC_DEFAULT; // kept for components that can't use hooks
 
-/* ─── Step 1: Basic Info ─── */
+/* ΓöÇΓöÇΓöÇ Step 1: Basic Info ΓöÇΓöÇΓöÇ */
 function StepBasicInfo({ data, onChange, onNext }) {
   const [f, setF] = useState(data);
   const upd = (k, v) => { const n = {...f,[k]:v}; setF(n); onChange(n); };
@@ -133,7 +133,7 @@ function StepBasicInfo({ data, onChange, onNext }) {
       </div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
         <div>
-          <label style={{display:"block",fontSize:12,fontWeight:600,color:"#374151",marginBottom:6}}>Price (₹)</label>
+          <label style={{display:"block",fontSize:12,fontWeight:600,color:"#374151",marginBottom:6}}>Price (Γé╣)</label>
           <input type="number" min={0} value={f.price||0} onChange={e=>upd("price",Number(e.target.value))}
             className="field text-sm"/>
         </div>
@@ -146,7 +146,7 @@ function StepBasicInfo({ data, onChange, onNext }) {
       <div>
         <label style={{display:"block",fontSize:12,fontWeight:600,color:"#374151",marginBottom:6}}>Description *</label>
         <textarea required rows={3} value={f.description||""} onChange={e=>upd("description",e.target.value)}
-          placeholder="Describe your service clearly — what you offer, who it's for, and what makes it trustworthy."
+          placeholder="Describe your service clearly ΓÇö what you offer, who it's for, and what makes it trustworthy."
           className="field resize-none text-sm"/>
       </div>
       <button onClick={onNext} disabled={!f.title||!f.description||!f.contactNumber}
@@ -160,7 +160,7 @@ function StepBasicInfo({ data, onChange, onNext }) {
 }
 
 
-/* ─── Step 1.5: Service Photos ─── */
+/* ΓöÇΓöÇΓöÇ Step 1.5: Service Photos ΓöÇΓöÇΓöÇ */
 function StepPhotos({ serviceId, images, setImages, onNext, onSkip }) {
   const [uploading, setUploading] = useState(false);
   const inp = useRef(null);
@@ -189,7 +189,7 @@ function StepPhotos({ serviceId, images, setImages, onNext, onSkip }) {
   return (
     <div style={{display:"flex",flexDirection:"column",gap:16}}>
       <div style={{background:"#f0f9ff",border:"1px solid #bae6fd",borderRadius:10,padding:"12px 14px",fontSize:12,color:"#0369a1",lineHeight:1.65}}>
-        Photos help newcomers trust your service. Add up to 10 clear photos — this step is optional but recommended.
+        Photos help newcomers trust your service. Add up to 10 clear photos ΓÇö this step is optional but recommended.
       </div>
 
       {/* Upload area */}
@@ -201,9 +201,9 @@ function StepPhotos({ serviceId, images, setImages, onNext, onSkip }) {
           onChange={e=>addFiles(e.target.files)}/>
         <Camera style={{width:32,height:32,color:"#94a3b8",margin:"0 auto 10px"}}/>
         <p style={{fontSize:13,fontWeight:600,color:"#374151",margin:"0 0 4px"}}>
-          {uploading ? "Uploading…" : "Click or drag photos here"}
+          {uploading ? "UploadingΓÇª" : "Click or drag photos here"}
         </p>
-        <p style={{fontSize:11,color:"#94a3b8",margin:0}}>JPEG, PNG, WebP · Max 5 MB each · Up to 10 photos</p>
+        <p style={{fontSize:11,color:"#94a3b8",margin:0}}>JPEG, PNG, WebP ┬╖ Max 5 MB each ┬╖ Up to 10 photos</p>
       </div>
 
       {/* Preview grid */}
@@ -239,7 +239,7 @@ function StepPhotos({ serviceId, images, setImages, onNext, onSkip }) {
   );
 }
 
-/* ─── Step 2: Document Upload ─── */
+/* ΓöÇΓöÇΓöÇ Step 2: Document Upload ΓöÇΓöÇΓöÇ */
 function DocUploadField({ label, name, required, optional, file, onFile, hint }) {
   const inp = useRef(null);
   return (
@@ -262,7 +262,7 @@ function DocUploadField({ label, name, required, optional, file, onFile, hint })
             {optional && <span style={{color:"#6366f1",fontSize:11,marginLeft:4,fontWeight:500}}>Optional</span>}
           </p>
           <p style={{fontSize:11,color:"#94a3b8",margin:0}}>
-            {file ? file.name : hint || "Click to upload — JPEG, PNG or PDF"}
+            {file ? file.name : hint || "Click to upload ΓÇö JPEG, PNG or PDF"}
           </p>
         </div>
         {file && <button onClick={e=>{e.stopPropagation();onFile(name,null);}}
@@ -285,7 +285,7 @@ function StepDocuments({ category, serviceId, onNext }) {
 
   const submit = async () => {
     if (!hasIdentity) {
-      toast.error("Please upload at least one identity document — Aadhaar or PAN card");
+      toast.error("Please upload at least one identity document ΓÇö Aadhaar or PAN card");
       return;
     }
     setUploading(true);
@@ -293,7 +293,7 @@ function StepDocuments({ category, serviceId, onNext }) {
       const fd = new FormData();
       Object.entries(files).forEach(([k,v]) => { if(v) fd.append(k, v); });
       await serviceAPI.uploadDocuments(serviceId, fd);
-      toast.success("Documents uploaded! AI verification in progress…");
+      toast.success("Documents uploaded! AI verification in progressΓÇª");
       onNext();
     } catch(e) {
       toast.error(e.response?.data?.message || "Upload failed");
@@ -304,14 +304,14 @@ function StepDocuments({ category, serviceId, onNext }) {
     const identityFile = files.aadhaar || files.pan;
     if (!identityFile) { toast.error("Upload an identity document first"); return; }
     const fieldName = files.aadhaar ? "aadhaar" : "pan";
-    toast("Running OCR debug scan…", { icon: "🔍" });
+    toast("Running OCR debug scanΓÇª", { icon: "≡ƒöì" });
     try {
       const fd = new FormData();
       fd.append(fieldName, identityFile);
       const resp = await fetch("/api/services/ocr-debug", { method: "POST", body: fd });
       const data = await resp.json();
       const d = data.data ?? data;
-      console.group("🔍 OCR Debug Result");
+      console.group("≡ƒöì OCR Debug Result");
       console.log("Confidence:", d.ocr?.confidence?.toFixed(1) + "%");
       console.log("Text length:", d.ocr?.textLength, "chars");
       console.log("Raw OCR text:\n", d.ocr?.rawText);
@@ -322,14 +322,14 @@ function StepDocuments({ category, serviceId, onNext }) {
       toast.success(
         `OCR ${d.ocr?.confidence?.toFixed(1)}% | ` +
         `${d.ocr?.textLength} chars | ` +
-        `Num: ${d.patterns?.aadhaarNumber ? "✓" : "✗"} ` +
-        `KW: ${d.patterns?.aadhaarKeyword ? "✓" : "✗"} ` +
+        `Num: ${d.patterns?.aadhaarNumber ? "Γ£ô" : "Γ£ù"} ` +
+        `KW: ${d.patterns?.aadhaarKeyword ? "Γ£ô" : "Γ£ù"} ` +
         `Score: ${d.contentScore}`,
         { duration: 8000 }
       );
     } catch(e) {
       console.error("OCR debug failed:", e);
-      toast.error("OCR debug failed — check console");
+      toast.error("OCR debug failed ΓÇö check console");
     }
   };
 
@@ -339,49 +339,49 @@ function StepDocuments({ category, serviceId, onNext }) {
       <div style={{background:"#eff6ff",border:"1px solid #bfdbfe",borderRadius:10,
         padding:"12px 14px",fontSize:12,color:"#1e40af",lineHeight:1.65}}>
         <strong>Identity verification is required</strong> to publish your service.
-        Business documents are optional — uploading them earns a
+        Business documents are optional ΓÇö uploading them earns a
         <strong> Business Verified</strong> badge that increases trust with newcomers.
       </div>
 
-      {/* ── Required: Identity ── */}
+      {/* ΓöÇΓöÇ Required: Identity ΓöÇΓöÇ */}
       <div>
         <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
           <Shield style={{width:14,height:14,color:"#dc2626"}}/>
           <span style={{fontSize:12,fontWeight:700,color:"#dc2626",textTransform:"uppercase",letterSpacing:"0.06em"}}>
-            Identity Verification (Required — upload at least one)
+            Identity Verification (Required ΓÇö upload at least one)
           </span>
         </div>
         <div style={{display:"flex",flexDirection:"column",gap:8}}>
           <DocUploadField name="aadhaar" label="Aadhaar Card" required
-            hint="Upload front side — used for identity & name verification"
+            hint="Upload front side ΓÇö used for identity & name verification"
             file={files.aadhaar} onFile={setFile}/>
           <DocUploadField name="pan" label="PAN Card" required
-            hint="PAN format: ABCDE1234F — used for identity verification"
+            hint="PAN format: ABCDE1234F ΓÇö used for identity verification"
             file={files.pan} onFile={setFile}/>
         </div>
         {!hasIdentity && (
           <p style={{fontSize:11,color:"#dc2626",margin:"6px 0 0",paddingLeft:2}}>
-            ↑ Upload Aadhaar OR PAN (or both) to continue
+            Γåæ Upload Aadhaar OR PAN (or both) to continue
           </p>
         )}
         {hasIdentity && (
           <p style={{fontSize:11,color:"#16a34a",margin:"6px 0 0",paddingLeft:2}}>
-            ✓ Identity document selected
+            Γ£ô Identity document selected
           </p>
         )}
       </div>
 
-      {/* ── Optional: Business ── */}
+      {/* ΓöÇΓöÇ Optional: Business ΓöÇΓöÇ */}
       <div>
         <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:10}}>
           <Award style={{width:14,height:14,color:"#6366f1"}}/>
           <span style={{fontSize:12,fontWeight:700,color:"#6366f1",textTransform:"uppercase",letterSpacing:"0.06em"}}>
-            Business Verification (Optional — earns Business Verified badge)
+            Business Verification (Optional ΓÇö earns Business Verified badge)
           </span>
         </div>
         <div style={{display:"flex",flexDirection:"column",gap:8}}>
           <DocUploadField name="gst" label="GST Certificate" optional
-            hint="GSTIN format required — for businesses registered under GST"
+            hint="GSTIN format required ΓÇö for businesses registered under GST"
             file={files.gst} onFile={setFile}/>
           <DocUploadField name="businessLicense" label="Business License" optional
             hint="Municipal / trade license issued by local authority"
@@ -392,13 +392,13 @@ function StepDocuments({ category, serviceId, onNext }) {
         </div>
       </div>
 
-      {/* Debug button — shows OCR output in browser console + toast */}
+      {/* Debug button ΓÇö shows OCR output in browser console + toast */}
       {hasIdentity && (
         <button onClick={runOcrDebug}
           style={{width:"100%",padding:"9px",borderRadius:10,background:"#f8fafc",
             border:"1.5px solid #e2e8f0",color:"#64748b",fontSize:12,fontWeight:600,
             cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
-          🔍 Test OCR (debug — check browser console)
+          ≡ƒöì Test OCR (debug ΓÇö check browser console)
         </button>
       )}
 
@@ -410,7 +410,7 @@ function StepDocuments({ category, serviceId, onNext }) {
           cursor:(uploading||!hasIdentity)?"not-allowed":"pointer",
           display:"flex",alignItems:"center",justifyContent:"center",gap:7}}>
         {uploading
-          ? <><Loader2 style={{width:16,height:16,animation:"spin 1s linear infinite"}}/> Uploading…</>
+          ? <><Loader2 style={{width:16,height:16,animation:"spin 1s linear infinite"}}/> UploadingΓÇª</>
           : "Upload & Verify Documents"}
         <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
       </button>
@@ -418,7 +418,7 @@ function StepDocuments({ category, serviceId, onNext }) {
   );
 }
 
-/* ─── Step 3: AI Verification Result ─── */
+/* ΓöÇΓöÇΓöÇ Step 3: AI Verification Result ΓöÇΓöÇΓöÇ */
 const DOC_LABELS_MAP = {
   aadhaar: "Aadhaar Card", pan: "PAN Card", gst: "GST Certificate",
   businessLicense: "Business License", registrationCert: "Registration Certificate",
@@ -446,14 +446,14 @@ function DocResultRow({ docType, r }) {
           <span style={{fontSize:10,fontWeight:700,padding:"2px 8px",borderRadius:999,
             background: r.typeMatch ? "#dcfce7" : "#fee2e2",
             color:      r.typeMatch ? "#15803d" : "#b91c1c"}}>
-            {r.typeMatch ? `✓ ${r.detectedType}` : `✗ detected: ${r.detectedType}`}
+            {r.typeMatch ? `Γ£ô ${r.detectedType}` : `Γ£ù detected: ${r.detectedType}`}
           </span>
         )}
         <span style={{fontSize:12,fontWeight:800,color:dotColor}}>{r.compositeScore}/100</span>
       </div>
       <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
         <span style={{fontSize:10,background:"#f1f5f9",color:"#475569",padding:"2px 8px",borderRadius:6,fontWeight:600}}>
-          OCR {r.ocrConfidence}% · {r.ocrProvider}
+          OCR {r.ocrConfidence}% ┬╖ {r.ocrProvider}
         </span>
         <span style={{fontSize:10,background:"#f1f5f9",color:"#475569",padding:"2px 8px",borderRadius:6,fontWeight:600}}>
           Format {r.validationScore}/100
@@ -470,17 +470,17 @@ function DocResultRow({ docType, r }) {
         <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
           {r.extractedFields.name && (
             <span style={{fontSize:11,color:"#334155",background:"#e2e8f0",padding:"2px 8px",borderRadius:6}}>
-              👤 {r.extractedFields.name}
+              ≡ƒæñ {r.extractedFields.name}
             </span>
           )}
           {r.extractedFields.documentNumber && (
             <span style={{fontSize:11,color:"#334155",background:"#e2e8f0",padding:"2px 8px",borderRadius:6}}>
-              🪪 {"·".repeat(Math.max(0,r.extractedFields.documentNumber.length-4))}{r.extractedFields.documentNumber.slice(-4)}
+              ≡ƒ¬¬ {"┬╖".repeat(Math.max(0,r.extractedFields.documentNumber.length-4))}{r.extractedFields.documentNumber.slice(-4)}
             </span>
           )}
           {r.extractedFields.dob && (
             <span style={{fontSize:11,color:"#334155",background:"#e2e8f0",padding:"2px 8px",borderRadius:6}}>
-              📅 {r.extractedFields.dob}
+              ≡ƒôà {r.extractedFields.dob}
             </span>
           )}
         </div>
@@ -517,7 +517,7 @@ function VerificationLevelBadge({ level, identityPassed, businessPassed }) {
 function StepVerification({ serviceId, onNext, onRetry }) {
   const [status, setStatus] = useState("verifying");
   const [vData,  setVData]  = useState(null);
-  const [stage,  setStage]  = useState("Preparing documents for analysis…");
+  const [stage,  setStage]  = useState("Preparing documents for analysisΓÇª");
 
   useEffect(() => {
     let interval;
@@ -540,7 +540,7 @@ function StepVerification({ serviceId, onNext, onRetry }) {
     return () => clearInterval(interval);
   }, [serviceId]);
 
-  /* ── In Progress ── */
+  /* ΓöÇΓöÇ In Progress ΓöÇΓöÇ */
   if (status === "verifying") return (
     <div style={{padding:"24px 4px"}}>
       <div style={{textAlign:"center",marginBottom:20}}>
@@ -558,7 +558,7 @@ function StepVerification({ serviceId, onNext, onRetry }) {
     </div>
   );
 
-  /* ── Identity Verified (level 1 or 2) ── */
+  /* ΓöÇΓöÇ Identity Verified (level 1 or 2) ΓöÇΓöÇ */
   if (status === "verified") {
     const docResults      = vData?.documentResults || {};
     const identityPassed  = vData?.identityPassed  ?? true;
@@ -578,11 +578,11 @@ function StepVerification({ serviceId, onNext, onRetry }) {
             </div>
             <div style={{flex:1}}>
               <p style={{fontSize:15,fontWeight:800,color:"#14532d",margin:"0 0 6px"}}>
-                ✅ Verification Level {level} Passed
+                Γ£à Verification Level {level} Passed
               </p>
               <VerificationLevelBadge level={level} identityPassed={identityPassed} businessPassed={businessPassed}/>
               <p style={{fontSize:12,color:"#16a34a",margin:"6px 0 0"}}>
-                Score: {vData?.score ?? "—"}/100 · You can now proceed to choose a subscription plan
+                Score: {vData?.score ?? "ΓÇö"}/100 ┬╖ You can now proceed to choose a subscription plan
               </p>
             </div>
           </div>
@@ -609,7 +609,7 @@ function StepVerification({ serviceId, onNext, onRetry }) {
             </div>
             {!businessPassed && (
               <p style={{fontSize:11,color:"#64748b",margin:"8px 0 0"}}>
-                Business documents did not pass verification — you can still publish your service.
+                Business documents did not pass verification ΓÇö you can still publish your service.
                 Re-upload better quality documents later to earn the Business Verified badge.
               </p>
             )}
@@ -628,7 +628,7 @@ function StepVerification({ serviceId, onNext, onRetry }) {
     );
   }
 
-  /* ── Identity Failed ── */
+  /* ΓöÇΓöÇ Identity Failed ΓöÇΓöÇ */
   const docResults = vData?.documentResults || {};
   const failures   = vData?.failureReasons?.length
     ? vData.failureReasons
@@ -641,7 +641,7 @@ function StepVerification({ serviceId, onNext, onRetry }) {
       <div style={{padding:"18px 20px",display:"flex",alignItems:"center",gap:12}}>
         <AlertCircle style={{width:24,height:24,color:"#dc2626",flexShrink:0}}/>
         <div>
-          <p style={{fontSize:14,fontWeight:800,color:"#b91c1c",margin:"0 0 2px"}}>❌ Identity Verification Failed</p>
+          <p style={{fontSize:14,fontWeight:800,color:"#b91c1c",margin:"0 0 2px"}}>Γ¥î Identity Verification Failed</p>
           <p style={{fontSize:12,color:"#dc2626",margin:0}}>Score: {vData?.score ?? 0}/100</p>
         </div>
       </div>
@@ -674,7 +674,7 @@ function StepVerification({ serviceId, onNext, onRetry }) {
   );
 }
 
-/* ─── Step 4: Subscription Plans ─── */
+/* ΓöÇΓöÇΓöÇ Step 4: Subscription Plans ΓöÇΓöÇΓöÇ */
 function StepSubscription({ onSelect, onSkip, currentPlan }) {
   const [selected, setSelected] = useState(currentPlan || null);
   const plans = usePlans();
@@ -731,7 +731,7 @@ function StepSubscription({ onSelect, onSkip, currentPlan }) {
   );
 }
 
-/* ─── Step 5: Payment ─── */
+/* ΓöÇΓöÇΓöÇ Step 5: Payment ΓöÇΓöÇΓöÇ */
 function StepPayment({ plan, serviceId, onSuccess }) {
   const [stage,   setStage]   = useState("idle");  // idle | processing | verifying | success | failed
   const [errMsg,  setErrMsg]  = useState("");
@@ -767,7 +767,7 @@ function StepPayment({ plan, serviceId, onSuccess }) {
       return;
     }
 
-    // 2. If mock mode (no Razorpay keys configured) — complete directly
+    // 2. If mock mode (no Razorpay keys configured) ΓÇö complete directly
     if (orderData.mock) {
       setStage("verifying");
       try {
@@ -781,7 +781,7 @@ function StepPayment({ plan, serviceId, onSuccess }) {
         });
         try { await serviceAPI.activateService(serviceId); } catch {}
         setStage("success");
-        toast.success("Payment successful! Your service is now live 🎉");
+        toast.success("Payment successful! Your service is now live ≡ƒÄë");
         setTimeout(() => onSuccess(), 1800);
       } catch(e) {
         setStage("failed");
@@ -790,7 +790,7 @@ function StepPayment({ plan, serviceId, onSuccess }) {
       return;
     }
 
-    // 3. Real Razorpay flow — load SDK and open modal
+    // 3. Real Razorpay flow ΓÇö load SDK and open modal
     const loaded = await loadRazorpayScript();
     if (!loaded) {
       setStage("failed");
@@ -812,7 +812,7 @@ function StepPayment({ plan, serviceId, onSuccess }) {
         email:   "",
         contact: "9999999999",
       },
-      // Do NOT set config.display or method restrictions — let Razorpay show all available methods
+      // Do NOT set config.display or method restrictions ΓÇö let Razorpay show all available methods
       // including UPI, Cards, Netbanking, Wallets
       modal: {
         backdropclose: false,
@@ -836,7 +836,7 @@ function StepPayment({ plan, serviceId, onSuccess }) {
           });
           try { await serviceAPI.activateService(serviceId); } catch {}
           setStage("success");
-          toast.success("Payment successful! Your service is now live 🎉");
+          toast.success("Payment successful! Your service is now live ≡ƒÄë");
           setTimeout(() => onSuccess(), 1800);
         } catch(e) {
           setStage("failed");
@@ -845,15 +845,15 @@ function StepPayment({ plan, serviceId, onSuccess }) {
       },
     };
 
-    // Full debug log — check browser console for this
-    console.log('[Razorpay] ── OPTIONS OBJECT ──────────────────────────');
+    // Full debug log ΓÇö check browser console for this
+    console.log('[Razorpay] ΓöÇΓöÇ OPTIONS OBJECT ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ');
     console.log('[Razorpay] key:            ', options.key);
     console.log('[Razorpay] order_id:       ', options.order_id);
-    console.log('[Razorpay] amount (paise): ', options.amount, '→ ₹', options.amount / 100);
+    console.log('[Razorpay] amount (paise): ', options.amount, 'ΓåÆ Γé╣', options.amount / 100);
     console.log('[Razorpay] currency:       ', options.currency);
     console.log('[Razorpay] prefill.contact:', options.prefill.contact, '(10 digits required for UPI)');
-    console.log('[Razorpay] config:         ', 'none — letting Razorpay show all methods including UPI');
-    console.log('[Razorpay] ────────────────────────────────────────────');
+    console.log('[Razorpay] config:         ', 'none ΓÇö letting Razorpay show all methods including UPI');
+    console.log('[Razorpay] ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ');
     console.log('[Razorpay] Full options:', JSON.stringify(options, null, 2));
 
     const rzp = new window.Razorpay(options);
@@ -866,30 +866,30 @@ function StepPayment({ plan, serviceId, onSuccess }) {
     setStage("idle"); // Reset to idle while modal is open (modal handles UI)
   };
 
-  /* ── Success state ── */
+  /* ΓöÇΓöÇ Success state ΓöÇΓöÇ */
   if (stage === "success") return (
     <motion.div initial={{opacity:0,scale:0.95}} animate={{opacity:1,scale:1}}
       style={{textAlign:"center",padding:"32px 20px"}}>
-      <div style={{fontSize:52,marginBottom:12}}>🎉</div>
+      <div style={{fontSize:52,marginBottom:12}}>≡ƒÄë</div>
       <p style={{fontSize:16,fontWeight:800,color:"#0f172a",marginBottom:6}}>Payment Successful!</p>
       <p style={{fontSize:13,color:"#64748b"}}>Your service is now live on TrustBridge.</p>
     </motion.div>
   );
 
-  /* ── Processing / Verifying state ── */
+  /* ΓöÇΓöÇ Processing / Verifying state ΓöÇΓöÇ */
   if (stage === "processing" || stage === "verifying") return (
     <div style={{textAlign:"center",padding:"32px 20px"}}>
       <Loader2 style={{width:44,height:44,color:"#2563eb",margin:"0 auto 16px",animation:"spin 1s linear infinite"}}/>
       <p style={{fontSize:15,fontWeight:700,color:"#0f172a",marginBottom:4}}>
-        {stage === "processing" ? "Creating Payment Order…" : "Verifying Transaction…"}
+        {stage === "processing" ? "Creating Payment OrderΓÇª" : "Verifying TransactionΓÇª"}
       </p>
       <p style={{fontSize:12,color:"#94a3b8"}}>
-        {stage === "processing" ? "Connecting to Razorpay…" : "Please do not close this window"}
+        {stage === "processing" ? "Connecting to RazorpayΓÇª" : "Please do not close this window"}
       </p>
     </div>
   );
 
-  /* ── Failed state ── */
+  /* ΓöÇΓöÇ Failed state ΓöÇΓöÇ */
   if (stage === "failed") return (
     <div style={{border:"1.5px solid #fecaca",borderRadius:14,background:"#fef2f2",padding:"20px 22px",display:"flex",flexDirection:"column",gap:14}}>
       <div style={{display:"flex",alignItems:"center",gap:10}}>
@@ -912,7 +912,7 @@ function StepPayment({ plan, serviceId, onSuccess }) {
     </div>
   );
 
-  /* ── Idle: order summary + pay button ── */
+  /* ΓöÇΓöÇ Idle: order summary + pay button ΓöÇΓöÇ */
   const priceNum = planData.priceNum || parseInt(planData.price.replace(/[^0-9]/g,"")) || 0;
 
   return (
@@ -924,7 +924,7 @@ function StepPayment({ plan, serviceId, onSuccess }) {
         </p>
         {[
           { label:`TrustBridge ${planData.name} Plan`, value:planData.price },
-          { label:"GST (18%)", value:`₹${Math.round(priceNum*0.18)}` },
+          { label:"GST (18%)", value:`Γé╣${Math.round(priceNum*0.18)}` },
         ].map(r=>(
           <div key={r.label} style={{display:"flex",justifyContent:"space-between",marginBottom:6}}>
             <span style={{fontSize:13,color:"#475569"}}>{r.label}</span>
@@ -934,7 +934,7 @@ function StepPayment({ plan, serviceId, onSuccess }) {
         <div style={{display:"flex",justifyContent:"space-between",paddingTop:10,borderTop:"1px solid #e2e8f0",marginTop:6}}>
           <span style={{fontSize:13,fontWeight:700,color:"#0f172a"}}>Total</span>
           <span style={{fontSize:16,fontWeight:800,color:"#2563eb"}}>
-            ₹{Math.round(priceNum*1.18)}
+            Γé╣{Math.round(priceNum*1.18)}
           </span>
         </div>
       </div>
@@ -957,7 +957,7 @@ function StepPayment({ plan, serviceId, onSuccess }) {
       <div style={{background:"#eff6ff",border:"1px solid #bfdbfe",borderRadius:10,padding:"10px 14px",
         display:"flex",alignItems:"center",gap:8,fontSize:12,color:"#1d4ed8"}}>
         <Shield style={{width:14,height:14,flexShrink:0}}/>
-        Secured by Razorpay · 256-bit SSL · PCI DSS Level 1 Certified
+        Secured by Razorpay ┬╖ 256-bit SSL ┬╖ PCI DSS Level 1 Certified
       </div>
 
       <button onClick={pay}
@@ -976,7 +976,7 @@ function StepPayment({ plan, serviceId, onSuccess }) {
 
 
 
-/* ─── Lightbox ─── */
+/* ΓöÇΓöÇΓöÇ Lightbox ΓöÇΓöÇΓöÇ */
 function Lightbox({ images, startIndex, onClose }) {
   const [idx,   setIdx]   = useState(startIndex);
   const [zoom,  setZoom]  = useState(1);
@@ -1072,7 +1072,7 @@ function Lightbox({ images, startIndex, onClose }) {
 
         <motion.img
           key={idx}
-          src={images[idx]}
+          src={getImageUrl(images[idx])}
           alt={`Photo ${idx + 1}`}
           initial={{ opacity: 0, scale: 0.97 }}
           animate={{ opacity: 1, scale: 1 }}
@@ -1094,9 +1094,9 @@ function Lightbox({ images, startIndex, onClose }) {
           onLoad={e => {
             const img = e.target;
             console.log(
-              `[TrustBridge] Lightbox image loaded — src: ${img.src}\n` +
-              `  natural: ${img.naturalWidth}×${img.naturalHeight}px\n` +
-              `  rendered: ${img.offsetWidth}×${img.offsetHeight}px`
+              `[TrustBridge] Lightbox image loaded ΓÇö src: ${img.src}\n` +
+              `  natural: ${img.naturalWidth}├ù${img.naturalHeight}px\n` +
+              `  rendered: ${img.offsetWidth}├ù${img.offsetHeight}px`
             );
           }}
           onError={e => { e.target.src = ""; e.target.alt = "Image unavailable"; }}
@@ -1128,7 +1128,7 @@ function Lightbox({ images, startIndex, onClose }) {
                 transition: "opacity 0.15s, border-color 0.15s",
                 background:"#1e293b",
               }}>
-              <img src={url} alt={`Thumb ${i+1}`} style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }}
+              <img src={getImageUrl(url)} alt={`Thumb ${i+1}`} style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }}
                 onError={e => { e.target.style.display = "none"; }}
               />
             </button>
@@ -1139,7 +1139,7 @@ function Lightbox({ images, startIndex, onClose }) {
   );
 }
 
-/* ─── Inline Image Gallery (inside Service Detail Modal) ─── */
+/* ΓöÇΓöÇΓöÇ Inline Image Gallery (inside Service Detail Modal) ΓöÇΓöÇΓöÇ */
 function ImageGallery({ images }) {
   const [active,   setActive]   = useState(0);
   const [lightbox, setLightbox] = useState(null); // null | index
@@ -1161,7 +1161,7 @@ function ImageGallery({ images }) {
           <span style={{ fontSize:11, color:"#94a3b8", fontWeight:600 }}>{active+1} / {images.length}</span>
         </div>
 
-        {/* Main image — natural size, capped at container */}
+        {/* Main image ΓÇö natural size, capped at container */}
         <div
           onClick={() => setLightbox(active)}
           style={{
@@ -1176,28 +1176,28 @@ function ImageGallery({ images }) {
         >
           <motion.img
             key={active}
-            src={images[active]}
+            src={getImageUrl(images[active])}
             alt={`Photo ${active + 1}`}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.2 }}
             style={{
-              /* Never stretch beyond natural size — only scale DOWN to fit */
+              /* Never stretch beyond natural size ΓÇö only scale DOWN to fit */
               maxWidth: "100%",
               maxHeight: 420,
               width: "auto",
               height: "auto",
               objectFit: "contain",
               display: "block",
-              /* Crisp pixel rendering — prevents browser smoothing from blurring */
+              /* Crisp pixel rendering ΓÇö prevents browser smoothing from blurring */
               imageRendering: "auto",
             }}
             onLoad={e => {
               const img = e.target;
               console.log(
-                `[TrustBridge] Gallery image loaded — src: ${img.src}\n` +
-                `  natural: ${img.naturalWidth}×${img.naturalHeight}px\n` +
-                `  rendered: ${img.offsetWidth}×${img.offsetHeight}px\n` +
+                `[TrustBridge] Gallery image loaded ΓÇö src: ${img.src}\n` +
+                `  natural: ${img.naturalWidth}├ù${img.naturalHeight}px\n` +
+                `  rendered: ${img.offsetWidth}├ù${img.offsetHeight}px\n` +
                 `  upscaled: ${img.offsetWidth > img.naturalWidth || img.offsetHeight > img.naturalHeight}`
               );
             }}
@@ -1250,7 +1250,7 @@ function ImageGallery({ images }) {
                   background:"#e2e8f0",
                 }}
               >
-                <img src={url} alt={`Thumb ${i+1}`}
+                <img src={getImageUrl(url)} alt={`Thumb ${i+1}`}
                   style={{ width:"100%", height:"100%", objectFit:"cover", display:"block" }}
                   onError={e => { e.target.style.display="none"; }}
                 />
@@ -1264,13 +1264,13 @@ function ImageGallery({ images }) {
 }
 
 
-/* ─── Service Detail Modal ─── */
+/* ΓöÇΓöÇΓöÇ Service Detail Modal ΓöÇΓöÇΓöÇ */
 function ServiceDetailModal({ service, onClose, onEdit, onDelete, onContinuePayment, onReverify }) {
   const wf = WORKFLOW_LABELS[service.workflowStatus] || WORKFLOW_LABELS.draft;
   const dv = service.docVerification || {};
   // Filter out placeholder/broken URLs before rendering
   const realImages = (service.images || []).filter(isRealImage);
-  const coverImg = realImages[0] || null;
+  const coverImg = realImages[0] ? getImageUrl(realImages[0]) : null;
 
   return (
     <div className="overlay" onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
@@ -1292,8 +1292,8 @@ function ServiceDetailModal({ service, onClose, onEdit, onDelete, onContinuePaym
             <p style={{fontSize:18,fontWeight:800,color:"white",margin:"0 0 6px",textShadow:"0 1px 4px rgba(0,0,0,0.5)"}}>{service.title}</p>
             <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
               <span style={{fontSize:10,fontWeight:700,padding:"3px 9px",borderRadius:999,background:wf.bg,color:wf.color}}>{wf.label}</span>
-              {dv.identityPassed && <span style={{fontSize:10,fontWeight:700,padding:"3px 9px",borderRadius:999,background:"#dcfce7",color:"#15803d"}}>✓ Identity Verified</span>}
-              {dv.businessPassed && <span style={{fontSize:10,fontWeight:700,padding:"3px 9px",borderRadius:999,background:"#e0e7ff",color:"#4338ca"}}>✓ Business Verified</span>}
+              {dv.identityPassed && <span style={{fontSize:10,fontWeight:700,padding:"3px 9px",borderRadius:999,background:"#dcfce7",color:"#15803d"}}>Γ£ô Identity Verified</span>}
+              {dv.businessPassed && <span style={{fontSize:10,fontWeight:700,padding:"3px 9px",borderRadius:999,background:"#e0e7ff",color:"#4338ca"}}>Γ£ô Business Verified</span>}
             </div>
           </div>
           <button onClick={onClose} style={{position:"absolute",top:12,right:14,width:32,height:32,borderRadius:"50%",background:"rgba(0,0,0,0.4)",border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
@@ -1307,11 +1307,11 @@ function ServiceDetailModal({ service, onClose, onEdit, onDelete, onContinuePaym
           {/* Quick info */}
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10,marginBottom:18}}>
             {[
-              {icon:<MapPin style={{width:13,height:13}}/>, label:"Location", value:`${service.location}${service.address?` — ${service.address}`:""}` },
-              {icon:<span style={{fontSize:13}}>₹</span>, label:"Price", value:service.price>0?`₹${service.price}${service.priceUnit?` / ${service.priceUnit}`:""}` : "Free / Negotiable"},
-              {icon:<Phone style={{width:13,height:13}}/>, label:"Contact", value:service.contactNumber||"—"},
-              {icon:<Mail style={{width:13,height:13}}/>, label:"Email", value:service.businessEmail||"—"},
-            ].filter(r=>r.value&&r.value!=="—").map(r => (
+              {icon:<MapPin style={{width:13,height:13}}/>, label:"Location", value:`${service.location}${service.address?` ΓÇö ${service.address}`:""}` },
+              {icon:<span style={{fontSize:13}}>Γé╣</span>, label:"Price", value:service.price>0?`Γé╣${service.price}${service.priceUnit?` / ${service.priceUnit}`:""}` : "Free / Negotiable"},
+              {icon:<Phone style={{width:13,height:13}}/>, label:"Contact", value:service.contactNumber||"ΓÇö"},
+              {icon:<Mail style={{width:13,height:13}}/>, label:"Email", value:service.businessEmail||"ΓÇö"},
+            ].filter(r=>r.value&&r.value!=="ΓÇö").map(r => (
               <div key={r.label} style={{background:"#f8fafc",borderRadius:10,padding:"10px 12px",display:"flex",gap:8,alignItems:"flex-start"}}>
                 <span style={{color:"#64748b",marginTop:1,flexShrink:0}}>{r.icon}</span>
                 <div style={{minWidth:0}}>
@@ -1339,12 +1339,12 @@ function ServiceDetailModal({ service, onClose, onEdit, onDelete, onContinuePaym
             <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:8}}>
               <span style={{fontSize:11,fontWeight:700,padding:"3px 10px",borderRadius:999,
                 background:dv.identityPassed?"#dcfce7":"#fee2e2",color:dv.identityPassed?"#15803d":"#b91c1c"}}>
-                {dv.identityPassed ? "✓ Identity Verified" : "✗ Identity Not Verified"}
+                {dv.identityPassed ? "Γ£ô Identity Verified" : "Γ£ù Identity Not Verified"}
               </span>
               {Object.keys(service.documents||{}).length > 0 && (
                 <span style={{fontSize:11,fontWeight:700,padding:"3px 10px",borderRadius:999,
                   background:dv.businessPassed?"#e0e7ff":"#f1f5f9",color:dv.businessPassed?"#4338ca":"#64748b"}}>
-                  {dv.businessPassed ? "✓ Business Verified" : "Business Docs Uploaded"}
+                  {dv.businessPassed ? "Γ£ô Business Verified" : "Business Docs Uploaded"}
                 </span>
               )}
             </div>
@@ -1367,7 +1367,7 @@ function ServiceDetailModal({ service, onClose, onEdit, onDelete, onContinuePaym
                 {Object.entries(service.documents).map(([k,v]) => v?.url && (
                   <span key={k} style={{fontSize:11,padding:"4px 10px",borderRadius:999,fontWeight:600,
                     background:v.verified?"#dcfce7":"#f1f5f9",color:v.verified?"#15803d":"#64748b",border:`1px solid ${v.verified?"#bbf7d0":"#e2e8f0"}`}}>
-                    {v.verified?"✓ ":""}{k}
+                    {v.verified?"Γ£ô ":""}{k}
                   </span>
                 ))}
               </div>
@@ -1380,13 +1380,13 @@ function ServiceDetailModal({ service, onClose, onEdit, onDelete, onContinuePaym
           {service.workflowStatus === "payment_pending" && (
             <button onClick={onContinuePayment}
               style={{flex:2,padding:"11px",borderRadius:10,background:"#2563eb",color:"white",border:"none",fontSize:13,fontWeight:700,cursor:"pointer"}}>
-              💳 Complete Payment
+              ≡ƒÆ│ Complete Payment
             </button>
           )}
           {service.workflowStatus === "rejected" && (
             <button onClick={onReverify}
               style={{flex:2,padding:"11px",borderRadius:10,background:"#7c3aed",color:"white",border:"none",fontSize:13,fontWeight:700,cursor:"pointer"}}>
-              🔄 Re-upload Documents
+              ≡ƒöä Re-upload Documents
             </button>
           )}
           <button onClick={onEdit}
@@ -1404,7 +1404,7 @@ function ServiceDetailModal({ service, onClose, onEdit, onDelete, onContinuePaym
   );
 }
 
-/* ─── Edit Service Modal ─── */
+/* ΓöÇΓöÇΓöÇ Edit Service Modal ΓöÇΓöÇΓöÇ */
 function EditServiceModal({ service, onClose, onSaved }) {
   const EDIT_TABS = ["Details","Photos","Documents","Status"];
   const [tab, setTab] = useState("Details");
@@ -1427,13 +1427,13 @@ function EditServiceModal({ service, onClose, onSaved }) {
   const imgInp = useRef(null);
   const upd = (k,v) => setF(p => ({...p,[k]:v}));
 
-  // ── save details ────────────────────────────────────────────────────────────
+  // ΓöÇΓöÇ save details ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
   const save = async () => {
     setSaving(true);
     try {
       const { data } = await serviceAPI.update(service._id, { ...f, price: Number(f.price) });
       if (data.requiresReview) {
-        toast("Your changes have been saved and submitted for verification.", { icon:"🔍" });
+        toast("Your changes have been saved and submitted for verification.", { icon:"≡ƒöì" });
       } else {
         toast.success("Service updated successfully.");
       }
@@ -1442,7 +1442,7 @@ function EditServiceModal({ service, onClose, onSaved }) {
     finally { setSaving(false); }
   };
 
-  // ── photo helpers ───────────────────────────────────────────────────────────
+  // ΓöÇΓöÇ photo helpers ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
   const addPhotos = async (files) => {
     if (!files?.length) return;
     if (images.length + files.length > 10) { toast.error("Maximum 10 photos per service"); return; }
@@ -1472,7 +1472,7 @@ function EditServiceModal({ service, onClose, onSaved }) {
     toast.success("Cover photo updated.");
   };
 
-  // ── pause / activate ────────────────────────────────────────────────────────
+  // ΓöÇΓöÇ pause / activate ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
   const togglePause = async () => {
     const newStatus = service.workflowStatus === "published" ? "paused" : "published";
     setPausing(true);
@@ -1527,13 +1527,13 @@ function EditServiceModal({ service, onClose, onSaved }) {
           <AnimatePresence mode="wait">
             <motion.div key={tab} initial={{opacity:0,x:10}} animate={{opacity:1,x:0}} exit={{opacity:0,x:-10}} transition={{duration:0.15}}>
 
-              {/* ── DETAILS TAB ── */}
+              {/* ΓöÇΓöÇ DETAILS TAB ΓöÇΓöÇ */}
               {tab === "Details" && (
                 <div style={{display:"flex",flexDirection:"column",gap:14}}>
                   {/* Critical change warning */}
                   {["published"].includes(service.workflowStatus) && (
                     <div style={{padding:"10px 14px",background:"#fffbeb",border:"1px solid #fde68a",borderRadius:10,fontSize:12,color:"#b45309"}}>
-                      💡 Changing Category or Location will require admin re-verification before your service goes live again.
+                      ≡ƒÆí Changing Category or Location will require admin re-verification before your service goes live again.
                     </div>
                   )}
                   <div>
@@ -1543,7 +1543,7 @@ function EditServiceModal({ service, onClose, onSaved }) {
                   <div>
                     <label style={lblStyle}>Description *</label>
                     <textarea value={f.description} onChange={e=>upd("description",e.target.value)}
-                      rows={4} style={{...fieldStyle,resize:"vertical"}} placeholder="Describe your service…"/>
+                      rows={4} style={{...fieldStyle,resize:"vertical"}} placeholder="Describe your serviceΓÇª"/>
                   </div>
                   <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
                     <div>
@@ -1565,12 +1565,12 @@ function EditServiceModal({ service, onClose, onSaved }) {
                   </div>
                   <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
                     <div>
-                      <label style={lblStyle}>Price (₹)</label>
+                      <label style={lblStyle}>Price (Γé╣)</label>
                       <input type="number" min="0" value={f.price} onChange={e=>upd("price",e.target.value)} style={fieldStyle}/>
                     </div>
                     <div>
                       <label style={lblStyle}>Price Unit</label>
-                      <input value={f.priceUnit} onChange={e=>upd("priceUnit",e.target.value)} style={fieldStyle} placeholder="per visit, per hour…"/>
+                      <input value={f.priceUnit} onChange={e=>upd("priceUnit",e.target.value)} style={fieldStyle} placeholder="per visit, per hourΓÇª"/>
                     </div>
                   </div>
                   <div>
@@ -1590,7 +1590,7 @@ function EditServiceModal({ service, onClose, onSaved }) {
                 </div>
               )}
 
-              {/* ── PHOTOS TAB ── */}
+              {/* ΓöÇΓöÇ PHOTOS TAB ΓöÇΓöÇ */}
               {tab === "Photos" && (
                 <div style={{display:"flex",flexDirection:"column",gap:16}}>
                   <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
@@ -1599,13 +1599,13 @@ function EditServiceModal({ service, onClose, onSaved }) {
                       style={{display:"flex",alignItems:"center",gap:6,padding:"8px 16px",borderRadius:8,
                         background:"#2563eb",color:"#fff",border:"none",fontSize:12,fontWeight:700,
                         cursor:images.length>=10?"not-allowed":"pointer",opacity:images.length>=10?0.5:1}}>
-                      {uploading ? <><Loader2 style={{width:13,height:13,animation:"spin 1s linear infinite"}}/> Uploading…</> : <><Upload style={{width:13,height:13}}/> Add Photos</>}
+                      {uploading ? <><Loader2 style={{width:13,height:13,animation:"spin 1s linear infinite"}}/> UploadingΓÇª</> : <><Upload style={{width:13,height:13}}/> Add Photos</>}
                     </button>
                     <input ref={imgInp} type="file" accept="image/*" multiple style={{display:"none"}} onChange={e=>addPhotos(e.target.files)}/>
                   </div>
                   {images.length === 0 ? (
                     <div style={{textAlign:"center",padding:"40px 24px",background:"#f8fafc",borderRadius:12,border:"1.5px dashed #e2e8f0"}}>
-                      <p style={{fontSize:32,margin:"0 0 8px"}}>📷</p>
+                      <p style={{fontSize:32,margin:"0 0 8px"}}>≡ƒô╖</p>
                       <p style={{fontSize:13,color:"#64748b",margin:0}}>No photos yet. Upload photos to attract more customers.</p>
                     </div>
                   ) : (
@@ -1645,11 +1645,11 @@ function EditServiceModal({ service, onClose, onSaved }) {
                 </div>
               )}
 
-              {/* ── DOCUMENTS TAB ── */}
+              {/* ΓöÇΓöÇ DOCUMENTS TAB ΓöÇΓöÇ */}
               {tab === "Documents" && (
                 <div style={{display:"flex",flexDirection:"column",gap:14}}>
                   <div style={{padding:"12px 16px",background:"#eff6ff",borderRadius:10,border:"1px solid #bfdbfe",fontSize:12,color:"#1d4ed8"}}>
-                    ℹ️ Re-uploading documents will trigger a new AI verification process. Your service may be temporarily hidden during review.
+                    Γä╣∩╕Å Re-uploading documents will trigger a new AI verification process. Your service may be temporarily hidden during review.
                   </div>
                   {/* Verification status */}
                   <div style={{padding:"14px 16px",background:"#f8fafc",borderRadius:12,border:"1.5px solid #e2e8f0"}}>
@@ -1658,12 +1658,12 @@ function EditServiceModal({ service, onClose, onSaved }) {
                       <span style={{fontSize:11,fontWeight:700,padding:"4px 12px",borderRadius:99,
                         background:service.docVerification?.identityPassed?"#dcfce7":"#fee2e2",
                         color:service.docVerification?.identityPassed?"#15803d":"#b91c1c"}}>
-                        {service.docVerification?.identityPassed?"✓ Identity Verified":"✗ Identity Not Verified"}
+                        {service.docVerification?.identityPassed?"Γ£ô Identity Verified":"Γ£ù Identity Not Verified"}
                       </span>
                       <span style={{fontSize:11,fontWeight:700,padding:"4px 12px",borderRadius:99,
                         background:service.docVerification?.businessPassed?"#e0e7ff":"#f1f5f9",
                         color:service.docVerification?.businessPassed?"#4338ca":"#64748b"}}>
-                        {service.docVerification?.businessPassed?"✓ Business Verified":"Business Docs Not Verified"}
+                        {service.docVerification?.businessPassed?"Γ£ô Business Verified":"Business Docs Not Verified"}
                       </span>
                     </div>
                     {service.docVerification?.failureReasons?.length > 0 && (
@@ -1678,7 +1678,7 @@ function EditServiceModal({ service, onClose, onSaved }) {
                 </div>
               )}
 
-              {/* ── STATUS TAB ── */}
+              {/* ΓöÇΓöÇ STATUS TAB ΓöÇΓöÇ */}
               {tab === "Status" && (
                 <div style={{display:"flex",flexDirection:"column",gap:14}}>
                   {/* Current status */}
@@ -1708,7 +1708,7 @@ function EditServiceModal({ service, onClose, onSaved }) {
                       <button onClick={togglePause} disabled={pausing}
                         style={{padding:"10px 20px",borderRadius:9,border:"none",fontSize:13,fontWeight:700,cursor:"pointer",
                           background:service.workflowStatus==="published"?"#d97706":"#16a34a",color:"white"}}>
-                        {pausing?"Updating…":service.workflowStatus==="published"?"Pause Service":"Re-activate Service"}
+                        {pausing?"UpdatingΓÇª":service.workflowStatus==="published"?"Pause Service":"Re-activate Service"}
                       </button>
                     </div>
                   )}
@@ -1727,7 +1727,7 @@ function EditServiceModal({ service, onClose, onSaved }) {
           </AnimatePresence>
         </div>
 
-        {/* Footer — save button only for Details tab */}
+        {/* Footer ΓÇö save button only for Details tab */}
         {tab === "Details" && (
           <div style={{padding:"14px 24px",borderTop:"1px solid #f1f5f9",display:"flex",gap:10,flexShrink:0}}>
             <button onClick={onClose} style={{flex:1,padding:"11px",borderRadius:10,background:"#f8fafc",border:"1.5px solid #e2e8f0",color:"#374151",fontSize:13,fontWeight:600,cursor:"pointer"}}>
@@ -1735,7 +1735,7 @@ function EditServiceModal({ service, onClose, onSaved }) {
             </button>
             <button onClick={save} disabled={saving}
               style={{flex:2,padding:"11px",borderRadius:10,background:saving?"#93c5fd":"#2563eb",color:"white",border:"none",fontSize:13,fontWeight:700,cursor:saving?"not-allowed":"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
-              {saving?<><Loader2 style={{width:14,height:14,animation:"spin 1s linear infinite"}}/>Saving…</>:"Save Changes"}
+              {saving?<><Loader2 style={{width:14,height:14,animation:"spin 1s linear infinite"}}/>SavingΓÇª</>:"Save Changes"}
             </button>
           </div>
         )}
@@ -1745,7 +1745,7 @@ function EditServiceModal({ service, onClose, onSaved }) {
 }
 
 
-/* ─── Delete Confirm Modal ─── */
+/* ΓöÇΓöÇΓöÇ Delete Confirm Modal ΓöÇΓöÇΓöÇ */
 function DeleteConfirmModal({ serviceName, onConfirm, onCancel, deleting }) {
   return (
     <div className="overlay" onClick={e=>{if(e.target===e.currentTarget)onCancel();}}>
@@ -1762,7 +1762,7 @@ function DeleteConfirmModal({ serviceName, onConfirm, onCancel, deleting }) {
           <button onClick={onCancel} style={{flex:1,padding:"11px",borderRadius:10,background:"#f8fafc",border:"1.5px solid #e2e8f0",color:"#374151",fontSize:13,fontWeight:600,cursor:"pointer"}}>Cancel</button>
           <button onClick={onConfirm} disabled={deleting}
             style={{flex:1,padding:"11px",borderRadius:10,background:"#dc2626",color:"white",border:"none",fontSize:13,fontWeight:700,cursor:deleting?"not-allowed":"pointer",display:"flex",alignItems:"center",justifyContent:"center",gap:6}}>
-            {deleting?<><Loader2 style={{width:14,height:14,animation:"spin 1s linear infinite"}}/> Deleting…</>:"Delete"}
+            {deleting?<><Loader2 style={{width:14,height:14,animation:"spin 1s linear infinite"}}/> DeletingΓÇª</>:"Delete"}
           </button>
         </div>
       </motion.div>
@@ -1770,7 +1770,7 @@ function DeleteConfirmModal({ serviceName, onConfirm, onCancel, deleting }) {
   );
 }
 
-/* ─── Create Service Wizard ─── */
+/* ΓöÇΓöÇΓöÇ Create Service Wizard ΓöÇΓöÇΓöÇ */
 const WIZARD_STEPS = ["Basic Info","Photos","Documents","AI Verification","Choose Plan","Payment","Done"];
 
 function CreateServiceWizard({ onClose, onCreated, resumeServiceId, resumeStep, resumeFormData }) {
@@ -1826,7 +1826,7 @@ function CreateServiceWizard({ onClose, onCreated, resumeServiceId, resumeStep, 
               <span key={s} style={{fontSize:10,fontWeight:600,padding:"3px 10px",borderRadius:999,whiteSpace:"nowrap",
                 background:i<step?"#dcfce7":i===step?"#dbeafe":"#f1f5f9",
                 color:i<step?"#15803d":i===step?"#1d4ed8":"#94a3b8"}}>
-                {i<step?"✓ ":""}{s}
+                {i<step?"Γ£ô ":""}{s}
               </span>
             ))}
           </div>
@@ -1859,7 +1859,7 @@ function CreateServiceWizard({ onClose, onCreated, resumeServiceId, resumeStep, 
 
               {step === 6 && (
                 <div style={{textAlign:"center",padding:"32px 20px"}}>
-                  <div style={{fontSize:52,marginBottom:16}}>🏢</div>
+                  <div style={{fontSize:52,marginBottom:16}}>≡ƒÅó</div>
                   <h3 style={{fontSize:18,fontWeight:800,color:"#0f172a",marginBottom:8}}>Service is Live!</h3>
                   <p style={{fontSize:13,color:"#64748b",marginBottom:24,lineHeight:1.65}}>
                     Your service is now visible to newcomers on TrustBridge. You can manage it from your dashboard.
@@ -1878,7 +1878,7 @@ function CreateServiceWizard({ onClose, onCreated, resumeServiceId, resumeStep, 
   );
 }
 
-/* ─── Main Provider Dashboard ─── */
+/* ΓöÇΓöÇΓöÇ Main Provider Dashboard ΓöÇΓöÇΓöÇ */
 export default function ProviderDashboard() {
   const { user }           = useAuth();
   const nav                = useNavigate();
@@ -1958,7 +1958,7 @@ export default function ProviderDashboard() {
       const { data } = await api.post('/auth/become-provider');
       localStorage.setItem('accessToken',  data.data.accessToken);
       localStorage.setItem('refreshToken', data.data.refreshToken);
-      toast.success('Account upgraded to Provider! Reloading…');
+      toast.success('Account upgraded to Provider! ReloadingΓÇª');
       setTimeout(() => window.location.reload(), 800);
     } catch(e) {
       toast.error(e.response?.data?.message || 'Upgrade failed');
@@ -1984,7 +1984,7 @@ export default function ProviderDashboard() {
         </div>
       )}
 
-      {/* ── Compact Welcome Banner ── */}
+      {/* ΓöÇΓöÇ Compact Welcome Banner ΓöÇΓöÇ */}
       <motion.div initial={{opacity:0,y:10}} animate={{opacity:1,y:0}}
         style={{background:"linear-gradient(135deg,#0f172a,#1e3a5f)",borderRadius:16,padding:"18px 24px",marginBottom:20,position:"relative",overflow:"hidden"}}>
         <div style={{position:"absolute",inset:0,pointerEvents:"none",background:"radial-gradient(ellipse 60% 100% at 80% 50%,rgba(59,130,246,0.2) 0%,transparent 70%)"}}/>
@@ -1999,9 +1999,9 @@ export default function ProviderDashboard() {
           {(() => {
             const vs = sub?.verificationStatus || "pending";
             const badges = {
-              verified:      {label:"Verified Provider",  bg:"rgba(22,163,74,0.2)",   border:"rgba(22,163,74,0.4)",   color:"#86efac", icon:"✓"},
-              manual_review: {label:"Verification Pending",bg:"rgba(217,119,6,0.2)",  border:"rgba(217,119,6,0.4)",   color:"#fde68a", icon:"⏳"},
-              rejected:      {label:"Verification Rejected",bg:"rgba(220,38,38,0.2)", border:"rgba(220,38,38,0.4)",   color:"#fca5a5", icon:"✗"},
+              verified:      {label:"Verified Provider",  bg:"rgba(22,163,74,0.2)",   border:"rgba(22,163,74,0.4)",   color:"#86efac", icon:"Γ£ô"},
+              manual_review: {label:"Verification Pending",bg:"rgba(217,119,6,0.2)",  border:"rgba(217,119,6,0.4)",   color:"#fde68a", icon:"ΓÅ│"},
+              rejected:      {label:"Verification Rejected",bg:"rgba(220,38,38,0.2)", border:"rgba(220,38,38,0.4)",   color:"#fca5a5", icon:"Γ£ù"},
             };
             const b = badges[vs] || badges.manual_review;
             return (
@@ -2015,12 +2015,12 @@ export default function ProviderDashboard() {
         {/* KPI row */}
         <div style={{display:"flex",gap:10,marginTop:14,flexWrap:"wrap"}}>
           {[
-            {label:"Services",         value:an?.totalServices||0,                         icon:"🏢"},
-            {label:"Total Bookings",   value:an?.totalBookings||0,                         icon:"📅"},
-            {label:"Pending",          value:an?.pendingBookings||0,                       icon:"⏳"},
-            {label:"Completed",        value:an?.completedBookings||0,                     icon:"✅"},
-            {label:"Avg Rating",       value:an?.averageRating?an.averageRating.toFixed(1):"—", icon:"⭐"},
-            {label:"Revenue",          value:`₹${an?.revenue||0}`,                        icon:"💰"},
+            {label:"Services",         value:an?.totalServices||0,                         icon:"≡ƒÅó"},
+            {label:"Total Bookings",   value:an?.totalBookings||0,                         icon:"≡ƒôà"},
+            {label:"Pending",          value:an?.pendingBookings||0,                       icon:"ΓÅ│"},
+            {label:"Completed",        value:an?.completedBookings||0,                     icon:"Γ£à"},
+            {label:"Avg Rating",       value:an?.averageRating?an.averageRating.toFixed(1):"ΓÇö", icon:"Γ¡É"},
+            {label:"Revenue",          value:`Γé╣${an?.revenue||0}`,                        icon:"≡ƒÆ░"},
           ].map(m => (
             <div key={m.label} style={{background:"rgba(255,255,255,0.08)",backdropFilter:"blur(8px)",borderRadius:10,padding:"10px 16px",border:"1px solid rgba(255,255,255,0.1)",minWidth:90}}>
               <p style={{fontSize:16,margin:"0 0 2px"}}>{m.icon}</p>
@@ -2031,7 +2031,7 @@ export default function ProviderDashboard() {
         </div>
       </motion.div>
 
-      {/* ── Profile Completion Bar ── */}
+      {/* ΓöÇΓöÇ Profile Completion Bar ΓöÇΓöÇ */}
       {(() => {
         const factors = [
           { label:"Profile details",        done: !!(user?.name && user?.email) },
@@ -2060,7 +2060,7 @@ export default function ProviderDashboard() {
                   padding:"3px 10px",borderRadius:99,
                   background:f.done?"#f0fdf4":"#f8fafc",color:f.done?"#16a34a":"#94a3b8",
                   border:`1px solid ${f.done?"#bbf7d0":"#e2e8f0"}`}}>
-                  {f.done?"✓":""} {f.label}
+                  {f.done?"Γ£ô":""} {f.label}
                 </span>
               ))}
             </div>
@@ -2068,7 +2068,7 @@ export default function ProviderDashboard() {
         );
       })()}
 
-      {/* ── Tabs + Add button ── */}
+      {/* ΓöÇΓöÇ Tabs + Add button ΓöÇΓöÇ */}
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,marginBottom:20,flexWrap:"wrap"}}>
         <div style={{display:"flex",gap:4,background:"#f1f5f9",borderRadius:10,padding:4}}>
           {TABS.map(t => (
@@ -2088,7 +2088,7 @@ export default function ProviderDashboard() {
         </button>
       </div>
 
-      {/* ── Services tab ── */}
+      {/* ΓöÇΓöÇ Services tab ΓöÇΓöÇ */}
       {tab === "Services" && (
         svcs.length > 0 ? (
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(290px,1fr))",gap:16}}>
@@ -2104,7 +2104,7 @@ export default function ProviderDashboard() {
                   <div style={{height:120,background:"linear-gradient(135deg,#e2e8f0,#cbd5e1)",position:"relative",overflow:"hidden",cursor:"pointer"}}
                     onClick={()=>handleCardClick(s)}>
                     {isRealImage(s.images?.[0])
-                      ? <img src={s.images[0]} alt="cover" style={{width:"100%",height:"100%",objectFit:"cover"}}
+                      ? <img src={getImageUrl(s.images[0])} alt="cover" style={{width:"100%",height:"100%",objectFit:"cover"}}
                           onError={e=>{
                             console.warn('[TrustBridge] Card cover failed to load:', e.target.src);
                             e.target.style.display='none';
@@ -2115,31 +2115,31 @@ export default function ProviderDashboard() {
                         </div>}
                     <span style={{position:"absolute",top:8,right:8,fontSize:10,fontWeight:700,padding:"3px 8px",borderRadius:999,background:wf.bg,color:wf.color}}>{wf.label}</span>
                     {s.docVerification?.identityPassed && (
-                      <span style={{position:"absolute",bottom:8,left:8,fontSize:9,fontWeight:700,padding:"2px 7px",borderRadius:999,background:"rgba(22,163,74,0.9)",color:"white"}}>✓ Verified</span>
+                      <span style={{position:"absolute",bottom:8,left:8,fontSize:9,fontWeight:700,padding:"2px 7px",borderRadius:999,background:"rgba(22,163,74,0.9)",color:"white"}}>Γ£ô Verified</span>
                     )}
                   </div>
                   {/* Body */}
                   <div style={{padding:"14px 16px"}}>
                     <p style={{fontWeight:700,fontSize:14,color:"#0f172a",margin:"0 0 2px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{s.title}</p>
-                    <p style={{fontSize:11,color:"#94a3b8",margin:"0 0 10px"}}>{s.category} · {s.location}</p>
+                    <p style={{fontSize:11,color:"#94a3b8",margin:"0 0 10px"}}>{s.category} ┬╖ {s.location}</p>
                     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
-                      <p style={{fontSize:14,fontWeight:700,color:"#2563eb",margin:0}}>{s.price>0?`₹${s.price}`:"Free"}</p>
+                      <p style={{fontSize:14,fontWeight:700,color:"#2563eb",margin:0}}>{s.price>0?`Γé╣${s.price}`:"Free"}</p>
                       <div style={{display:"flex",gap:10,fontSize:11,color:"#64748b"}}>
-                        <span>📅 {s.totalBookings||0} bookings</span>
-                        <span>⭐ {s.averageRating?.toFixed(1)||"—"}</span>
+                        <span>≡ƒôà {s.totalBookings||0} bookings</span>
+                        <span>Γ¡É {s.averageRating?.toFixed(1)||"ΓÇö"}</span>
                       </div>
                     </div>
                     {/* Action hints */}
-                    {s.workflowStatus==="payment_pending" && <div style={{marginBottom:10,padding:"7px 10px",background:"#fffbeb",borderRadius:8,border:"1px solid #fde68a",fontSize:11,color:"#b45309",fontWeight:600}}>⚠️ Payment required to publish</div>}
-                    {s.workflowStatus==="docs_pending"    && <div style={{marginBottom:10,padding:"7px 10px",background:"#fef2f2",borderRadius:8,border:"1px solid #fecaca",fontSize:11,color:"#b91c1c",fontWeight:600}}>📄 Documents required</div>}
-                    {s.workflowStatus==="rejected"        && <div style={{marginBottom:10,padding:"7px 10px",background:"#fef2f2",borderRadius:8,border:"1px solid #fecaca",fontSize:11,color:"#b91c1c",fontWeight:600}}>❌ Documents rejected — please re-upload</div>}
+                    {s.workflowStatus==="payment_pending" && <div style={{marginBottom:10,padding:"7px 10px",background:"#fffbeb",borderRadius:8,border:"1px solid #fde68a",fontSize:11,color:"#b45309",fontWeight:600}}>ΓÜá∩╕Å Payment required to publish</div>}
+                    {s.workflowStatus==="docs_pending"    && <div style={{marginBottom:10,padding:"7px 10px",background:"#fef2f2",borderRadius:8,border:"1px solid #fecaca",fontSize:11,color:"#b91c1c",fontWeight:600}}>≡ƒôä Documents required</div>}
+                    {s.workflowStatus==="rejected"        && <div style={{marginBottom:10,padding:"7px 10px",background:"#fef2f2",borderRadius:8,border:"1px solid #fecaca",fontSize:11,color:"#b91c1c",fontWeight:600}}>Γ¥î Documents rejected ΓÇö please re-upload</div>}
                     {/* Quick actions */}
                     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:6}}>
                       {[
                         {label:"View Listing", action:()=>handleCardClick(s),          style:{bg:"#eff6ff",color:"#2563eb",border:"#bfdbfe"}},
                         {label:"Edit Service", action:()=>setEditSvc(s),               style:{bg:"#f8fafc",color:"#475569",border:"#e2e8f0"}},
                         {label:"Delete",       action:()=>setDeleteSvc(s),             style:{bg:"#fef2f2",color:"#dc2626",border:"#fecaca"}},
-                        {label:s.workflowStatus==="published"?"Published ✓":"Setup",   action:()=>handleCardClick(s), style:{bg:"#f0fdf4",color:"#16a34a",border:"#bbf7d0"}},
+                        {label:s.workflowStatus==="published"?"Published Γ£ô":"Setup",   action:()=>handleCardClick(s), style:{bg:"#f0fdf4",color:"#16a34a",border:"#bbf7d0"}},
                       ].map(({label,action,style:st})=>(
                         <button key={label} onClick={action}
                           style={{padding:"7px 4px",borderRadius:8,border:`1px solid ${st.border}`,
@@ -2154,19 +2154,19 @@ export default function ProviderDashboard() {
             })}
           </div>
         ) : (
-          /* ── Empty state onboarding ── */
+          /* ΓöÇΓöÇ Empty state onboarding ΓöÇΓöÇ */
           <div style={{background:"#fff",border:"1.5px solid #e2e8f0",borderRadius:20,padding:"48px 32px",textAlign:"center"}}>
-            <div style={{fontSize:52,marginBottom:16}}>🚀</div>
+            <div style={{fontSize:52,marginBottom:16}}>≡ƒÜÇ</div>
             <h3 style={{fontSize:18,fontWeight:800,color:"#0f172a",margin:"0 0 8px"}}>Set up your first service</h3>
             <p style={{fontSize:14,color:"#64748b",margin:"0 0 28px",lineHeight:1.7,maxWidth:420,marginLeft:"auto",marginRight:"auto"}}>
               Start accepting bookings by listing your service on TrustBridge. Verified providers get featured placement.
             </p>
             <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:12,maxWidth:480,margin:"0 auto 28px"}}>
               {[
-                {icon:"🏢",label:"Add First Service",   sub:"Create and list your service",         action:()=>setShowWizard(true),                           primary:true},
-                {icon:"👤",label:"Complete Profile",     sub:"Update your business profile",         action:()=>nav("/profile"),                               primary:false},
-                {icon:"📖",label:"Provider Help Guide", sub:"Learn how TrustBridge works",          action:()=>window.open("/help","_blank"),                  primary:false},
-                {icon:"💬",label:"Contact Support",      sub:"Get help from our team",               action:()=>window.open("/contact","_blank"),               primary:false},
+                {icon:"≡ƒÅó",label:"Add First Service",   sub:"Create and list your service",         action:()=>setShowWizard(true),                           primary:true},
+                {icon:"≡ƒæñ",label:"Complete Profile",     sub:"Update your business profile",         action:()=>nav("/profile"),                               primary:false},
+                {icon:"≡ƒôû",label:"Provider Help Guide", sub:"Learn how TrustBridge works",          action:()=>window.open("/help","_blank"),                  primary:false},
+                {icon:"≡ƒÆ¼",label:"Contact Support",      sub:"Get help from our team",               action:()=>window.open("/contact","_blank"),               primary:false},
               ].map(({icon,label,sub,action,primary})=>(
                 <button key={label} onClick={action}
                   style={{padding:"16px",borderRadius:14,border:`1.5px solid ${primary?"#2563eb":"#e2e8f0"}`,
@@ -2190,7 +2190,7 @@ export default function ProviderDashboard() {
         )
       )}
 
-      {/* ── Bookings tab ── */}
+      {/* ΓöÇΓöÇ Bookings tab ΓöÇΓöÇ */}
       {tab === "Bookings" && (
         <div>
           {/* Status summary pills */}
@@ -2212,7 +2212,7 @@ export default function ProviderDashboard() {
             <a href="/bookings" style={{display:"inline-flex",alignItems:"center",gap:6,fontSize:13,fontWeight:700,
               color:"#2563eb",textDecoration:"none",padding:"8px 16px",borderRadius:9,
               background:"#eff6ff",border:"1.5px solid #bfdbfe"}}>
-              Manage All Bookings →
+              Manage All Bookings ΓåÆ
             </a>
           </div>
           {/* Booking list */}
@@ -2234,7 +2234,7 @@ export default function ProviderDashboard() {
                       {b.service?.title}
                     </p>
                     <p style={{fontSize:12,color:"#64748b",margin:0}}>
-                      {b.newcomer?.name || b.user?.name || "Customer"} · {new Date(b.date).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})}{b.time ? ` · ${b.time}` : ""}
+                      {b.newcomer?.name || b.user?.name || "Customer"} ┬╖ {new Date(b.date).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})}{b.time ? ` ┬╖ ${b.time}` : ""}
                     </p>
                   </div>
                   <span style={{fontSize:11,fontWeight:700,padding:"4px 12px",borderRadius:99,
@@ -2246,7 +2246,7 @@ export default function ProviderDashboard() {
               );
             }) : (
               <div style={{textAlign:"center",padding:"48px 24px",background:"#fff",border:"1.5px dashed #e2e8f0",borderRadius:16}}>
-                <p style={{fontSize:36,margin:"0 0 12px"}}>📅</p>
+                <p style={{fontSize:36,margin:"0 0 12px"}}>≡ƒôà</p>
                 <p style={{fontSize:15,fontWeight:700,color:"#0f172a",margin:"0 0 6px"}}>No bookings yet</p>
                 <p style={{fontSize:13,color:"#64748b",margin:0}}>Bookings will appear here once customers book your services.</p>
               </div>
@@ -2255,11 +2255,11 @@ export default function ProviderDashboard() {
         </div>
       )}
 
-      {/* ── Analytics tab ── */}
+      {/* ΓöÇΓöÇ Analytics tab ΓöÇΓöÇ */}
       {tab === "Analytics" && (
         an?.totalBookings === 0 && an?.totalServices === 0 ? (
           <div style={{textAlign:"center",padding:"48px 24px",background:"#fff",border:"1.5px dashed #e2e8f0",borderRadius:16}}>
-            <p style={{fontSize:36,margin:"0 0 12px"}}>📊</p>
+            <p style={{fontSize:36,margin:"0 0 12px"}}>≡ƒôè</p>
             <p style={{fontSize:15,fontWeight:700,color:"#0f172a",margin:"0 0 6px"}}>No analytics available yet</p>
             <p style={{fontSize:13,color:"#64748b",margin:0,lineHeight:1.6}}>
               Analytics will appear once you receive bookings and reviews.<br/>Add your first service to get started.
@@ -2270,14 +2270,14 @@ export default function ProviderDashboard() {
             {/* KPI grid */}
             <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(180px,1fr))",gap:14}}>
               {[
-                {icon:"🏢",label:"Total Services",    value:an?.totalServices||0,                          bg:"#eff6ff",border:"#bfdbfe",text:"#1d4ed8"},
-                {icon:"✅",label:"Active Services",   value:an?.activeServices||0,                         bg:"#f0fdf4",border:"#bbf7d0",text:"#15803d"},
-                {icon:"📅",label:"Total Bookings",    value:an?.totalBookings||0,                          bg:"#faf5ff",border:"#ddd6fe",text:"#7c3aed"},
-                {icon:"✅",label:"Completed",         value:an?.completedBookings||0,                      bg:"#f0fdf4",border:"#bbf7d0",text:"#15803d"},
-                {icon:"⏳",label:"Pending",           value:an?.pendingBookings||0,                        bg:"#fffbeb",border:"#fde68a",text:"#b45309"},
-                {icon:"⭐",label:"Avg Rating",        value:an?.averageRating?an.averageRating.toFixed(1):"—",bg:"#fffbeb",border:"#fde68a",text:"#b45309"},
-                {icon:"💰",label:"Total Revenue",     value:`₹${an?.revenue||0}`,                         bg:"#f0fdf4",border:"#bbf7d0",text:"#15803d"},
-                {icon:"📝",label:"Reviews",           value:svcs.reduce((t,s)=>t+(s.totalReviews||0),0),  bg:"#eff6ff",border:"#bfdbfe",text:"#1d4ed8"},
+                {icon:"≡ƒÅó",label:"Total Services",    value:an?.totalServices||0,                          bg:"#eff6ff",border:"#bfdbfe",text:"#1d4ed8"},
+                {icon:"Γ£à",label:"Active Services",   value:an?.activeServices||0,                         bg:"#f0fdf4",border:"#bbf7d0",text:"#15803d"},
+                {icon:"≡ƒôà",label:"Total Bookings",    value:an?.totalBookings||0,                          bg:"#faf5ff",border:"#ddd6fe",text:"#7c3aed"},
+                {icon:"Γ£à",label:"Completed",         value:an?.completedBookings||0,                      bg:"#f0fdf4",border:"#bbf7d0",text:"#15803d"},
+                {icon:"ΓÅ│",label:"Pending",           value:an?.pendingBookings||0,                        bg:"#fffbeb",border:"#fde68a",text:"#b45309"},
+                {icon:"Γ¡É",label:"Avg Rating",        value:an?.averageRating?an.averageRating.toFixed(1):"ΓÇö",bg:"#fffbeb",border:"#fde68a",text:"#b45309"},
+                {icon:"≡ƒÆ░",label:"Total Revenue",     value:`Γé╣${an?.revenue||0}`,                         bg:"#f0fdf4",border:"#bbf7d0",text:"#15803d"},
+                {icon:"≡ƒô¥",label:"Reviews",           value:svcs.reduce((t,s)=>t+(s.totalReviews||0),0),  bg:"#eff6ff",border:"#bfdbfe",text:"#1d4ed8"},
               ].map(m => (
                 <div key={m.label} style={{background:m.bg,border:`1.5px solid ${m.border}`,borderRadius:14,padding:"18px 20px"}}>
                   <p style={{fontSize:24,margin:"0 0 8px"}}>{m.icon}</p>
@@ -2296,9 +2296,9 @@ export default function ProviderDashboard() {
                 return (
                   <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:14}}>
                     {[
-                      {label:"Gross Revenue",  value:`₹${gross}`,   sub:"Total earned",       color:"#2563eb"},
-                      {label:"Platform Fee",   value:`₹${platFee}`, sub:"10% service charge", color:"#dc2626"},
-                      {label:"Net Earnings",   value:`₹${net}`,     sub:"Your take-home",      color:"#16a34a"},
+                      {label:"Gross Revenue",  value:`Γé╣${gross}`,   sub:"Total earned",       color:"#2563eb"},
+                      {label:"Platform Fee",   value:`Γé╣${platFee}`, sub:"10% service charge", color:"#dc2626"},
+                      {label:"Net Earnings",   value:`Γé╣${net}`,     sub:"Your take-home",      color:"#16a34a"},
                     ].map(r=>(
                       <div key={r.label} style={{padding:"16px",background:"#f8fafc",borderRadius:12,border:"1.5px solid #e2e8f0"}}>
                         <p style={{fontSize:"1.3rem",fontWeight:800,color:r.color,margin:"0 0 4px"}}>{r.value}</p>
@@ -2314,10 +2314,10 @@ export default function ProviderDashboard() {
             {sub && (
               <div style={{background:sub.status==="active"?"#f0fdf4":"#fffbeb",border:`1.5px solid ${sub.status==="active"?"#bbf7d0":"#fde68a"}`,borderRadius:14,padding:"16px 20px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:12,flexWrap:"wrap"}}>
                 <div>
-                  <p style={{fontSize:13,fontWeight:700,color:"#0f172a",margin:"0 0 2px"}}>Subscription — {sub.plan?.charAt(0).toUpperCase()+(sub.plan?.slice(1)||"")} Plan</p>
+                  <p style={{fontSize:13,fontWeight:700,color:"#0f172a",margin:"0 0 2px"}}>Subscription ΓÇö {sub.plan?.charAt(0).toUpperCase()+(sub.plan?.slice(1)||"")} Plan</p>
                   <p style={{fontSize:11,color:"#64748b",margin:0}}>
                     Status: <strong style={{color:sub.status==="active"?"#16a34a":"#d97706",textTransform:"capitalize"}}>{sub.status}</strong>
-                    {sub.endDate && ` · Renews ${new Date(sub.endDate).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})}`}
+                    {sub.endDate && ` ┬╖ Renews ${new Date(sub.endDate).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})}`}
                   </p>
                 </div>
                 <button onClick={()=>setShowPlans(true)}

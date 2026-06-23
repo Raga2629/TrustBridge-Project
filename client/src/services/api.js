@@ -1,5 +1,17 @@
 import axios from 'axios';
 
+// Base URL of the backend — used for both API calls and static asset URLs (/uploads/...)
+export const BACKEND_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api')
+  .replace(/\/api$/, '');
+
+// Resolve a potentially-relative image path to a full URL.
+// Safe to call with already-absolute URLs (http/https/data:).
+export function getImageUrl(url) {
+  if (!url) return '';
+  if (url.startsWith('http') || url.startsWith('data:')) return url;
+  return `${BACKEND_URL}${url.startsWith('/') ? '' : '/'}${url}`;
+}
+
 const api = axios.create({
 
   baseURL: import.meta.env.VITE_API_URL,
