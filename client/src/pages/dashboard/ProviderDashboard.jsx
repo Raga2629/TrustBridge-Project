@@ -203,7 +203,7 @@ function StepPhotos({ serviceId, images, setImages, onNext, onSkip }) {
         <p style={{fontSize:13,fontWeight:600,color:"#374151",margin:"0 0 4px"}}>
           {uploading ? "Uploading…" : "Click or drag photos here"}
         </p>
-        <p style={{fontSize:11,color:"#94a3b8",margin:0}}>JPEG, PNG, WebP ┬╖ Max 5 MB each ┬╖ Up to 10 photos</p>
+        <p style={{fontSize:11,color:"#94a3b8",margin:0}}>JPEG, PNG, WebP · Max 5 MB each · Up to 10 photos</p>
       </div>
 
       {/* Preview grid */}
@@ -453,7 +453,7 @@ function DocResultRow({ docType, r }) {
       </div>
       <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
         <span style={{fontSize:10,background:"#f1f5f9",color:"#475569",padding:"2px 8px",borderRadius:6,fontWeight:600}}>
-          OCR {r.ocrConfidence}% ┬╖ {r.ocrProvider}
+          OCR {r.ocrConfidence}% · {r.ocrProvider}
         </span>
         <span style={{fontSize:10,background:"#f1f5f9",color:"#475569",padding:"2px 8px",borderRadius:6,fontWeight:600}}>
           Format {r.validationScore}/100
@@ -475,7 +475,7 @@ function DocResultRow({ docType, r }) {
           )}
           {r.extractedFields.documentNumber && (
             <span style={{fontSize:11,color:"#334155",background:"#e2e8f0",padding:"2px 8px",borderRadius:6}}>
-              🔒 {"┬╖".repeat(Math.max(0,r.extractedFields.documentNumber.length-4))}{r.extractedFields.documentNumber.slice(-4)}
+              🔒 {"·".repeat(Math.max(0,r.extractedFields.documentNumber.length-4))}{r.extractedFields.documentNumber.slice(-4)}
             </span>
           )}
           {r.extractedFields.dob && (
@@ -582,7 +582,7 @@ function StepVerification({ serviceId, onNext, onRetry }) {
               </p>
               <VerificationLevelBadge level={level} identityPassed={identityPassed} businessPassed={businessPassed}/>
               <p style={{fontSize:12,color:"#16a34a",margin:"6px 0 0"}}>
-                Score: {vData?.score ?? "—"}/100 ┬╖ You can now proceed to choose a subscription plan
+                Score: {vData?.score ?? "—"}/100 · You can now proceed to choose a subscription plan
               </p>
             </div>
           </div>
@@ -957,7 +957,7 @@ function StepPayment({ plan, serviceId, onSuccess }) {
       <div style={{background:"#eff6ff",border:"1px solid #bfdbfe",borderRadius:10,padding:"10px 14px",
         display:"flex",alignItems:"center",gap:8,fontSize:12,color:"#1d4ed8"}}>
         <Shield style={{width:14,height:14,flexShrink:0}}/>
-        Secured by Razorpay ┬╖ 256-bit SSL ┬╖ PCI DSS Level 1 Certified
+        Secured by Razorpay · 256-bit SSL · PCI DSS Level 1 Certified
       </div>
 
       <button onClick={pay}
@@ -1095,8 +1095,8 @@ function Lightbox({ images, startIndex, onClose }) {
             const img = e.target;
             console.log(
               `[TrustBridge] Lightbox image loaded — src: ${img.src}\n` +
-              `  natural: ${img.naturalWidth}├ù${img.naturalHeight}px\n` +
-              `  rendered: ${img.offsetWidth}├ù${img.offsetHeight}px`
+              `  natural: ${img.naturalWidth}x${img.naturalHeight}px\n` +
+              `  rendered: ${img.offsetWidth}x${img.offsetHeight}px`
             );
           }}
           onError={e => { e.target.src = ""; e.target.alt = "Image unavailable"; }}
@@ -1196,8 +1196,8 @@ function ImageGallery({ images }) {
               const img = e.target;
               console.log(
                 `[TrustBridge] Gallery image loaded — src: ${img.src}\n` +
-                `  natural: ${img.naturalWidth}├ù${img.naturalHeight}px\n` +
-                `  rendered: ${img.offsetWidth}├ù${img.offsetHeight}px\n` +
+                `  natural: ${img.naturalWidth}x${img.naturalHeight}px\n` +
+                `  rendered: ${img.offsetWidth}x${img.offsetHeight}px\n` +
                 `  upscaled: ${img.offsetWidth > img.naturalWidth || img.offsetHeight > img.naturalHeight}`
               );
             }}
@@ -2121,7 +2121,7 @@ export default function ProviderDashboard() {
                   {/* Body */}
                   <div style={{padding:"14px 16px"}}>
                     <p style={{fontWeight:700,fontSize:14,color:"#0f172a",margin:"0 0 2px",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{s.title}</p>
-                    <p style={{fontSize:11,color:"#94a3b8",margin:"0 0 10px"}}>{s.category} ┬╖ {s.location}</p>
+                    <p style={{fontSize:11,color:"#94a3b8",margin:"0 0 10px"}}>{s.category} · {s.location}</p>
                     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
                       <p style={{fontSize:14,fontWeight:700,color:"#2563eb",margin:0}}>{s.price>0?`₹${s.price}`:"Free"}</p>
                       <div style={{display:"flex",gap:10,fontSize:11,color:"#64748b"}}>
@@ -2234,7 +2234,7 @@ export default function ProviderDashboard() {
                       {b.service?.title}
                     </p>
                     <p style={{fontSize:12,color:"#64748b",margin:0}}>
-                      {b.newcomer?.name || b.user?.name || "Customer"} ┬╖ {new Date(b.date).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})}{b.time ? ` ┬╖ ${b.time}` : ""}
+                      {b.newcomer?.name || b.user?.name || "Customer"} · {new Date(b.date).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})}{b.time ? ` · ${b.time}` : ""}
                     </p>
                   </div>
                   <span style={{fontSize:11,fontWeight:700,padding:"4px 12px",borderRadius:99,
@@ -2317,7 +2317,7 @@ export default function ProviderDashboard() {
                   <p style={{fontSize:13,fontWeight:700,color:"#0f172a",margin:"0 0 2px"}}>Subscription — {sub.plan?.charAt(0).toUpperCase()+(sub.plan?.slice(1)||"")} Plan</p>
                   <p style={{fontSize:11,color:"#64748b",margin:0}}>
                     Status: <strong style={{color:sub.status==="active"?"#16a34a":"#d97706",textTransform:"capitalize"}}>{sub.status}</strong>
-                    {sub.endDate && ` ┬╖ Renews ${new Date(sub.endDate).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})}`}
+                    {sub.endDate && ` · Renews ${new Date(sub.endDate).toLocaleDateString("en-IN",{day:"numeric",month:"short",year:"numeric"})}`}
                   </p>
                 </div>
                 <button onClick={()=>setShowPlans(true)}
