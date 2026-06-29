@@ -233,7 +233,9 @@ router.get('/:id', asyncHandler(async (req, res) => {
 
 router.post('/', protect, authorize('provider'), uploadFields, asyncHandler(async (req, res) => {
   const profile = await ProviderProfile.findOne({ user: req.user._id });
-
+  console.log("========== CREATE SERVICE ==========");
+  console.log("req.files =", req.files);
+  console.log("req.body =", req.body);
   let images = [];
   if (req.files?.images) {
     // Use uploadImage (disk in dev, Cloudinary in prod) instead of uploadMultiple
