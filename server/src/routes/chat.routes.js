@@ -2,7 +2,6 @@ import express from 'express';
 import Conversation from '../models/Conversation.js';
 import Message from '../models/Message.js';
 import User from '../models/User.js';
-import ResidentProfile from '../models/ResidentProfile.js';
 import { protect } from '../middleware/auth.js';
 import { uploadFields } from '../middleware/upload.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
@@ -25,14 +24,9 @@ router.post('/conversations', protect, asyncHandler(async (req, res) => {
   const participant = await User.findById(participantId);
   if (!participant) throw new AppError('User not found', 404);
 
-  if (req.user.role === 'newcomer' && participant.role !== 'resident') {
-    throw new AppError('Newcomers can only chat with verified residents', 403);
-  }
-  if (participant.role === 'resident') {
-    const profile = await ResidentProfile.findOne({ user: participantId });
-    if (!profile?.isVerifiedBadge) {
-      throw new AppError('Can only chat with verified local residents', 403);
-    }
+  // Prevent self-messaging
+  if (participantId.toString() === req.user._id.toString()) {
+    throw new AppError('You cannot start a conversation with yourself', 400);
   }
 
   let conversation = await Conversation.findOne({
