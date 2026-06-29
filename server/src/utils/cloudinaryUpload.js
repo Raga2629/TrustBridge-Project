@@ -6,14 +6,27 @@ export const uploadToCloudinary = async (buffer, folder = 'trustbridge') => {
     return `https://placehold.co/400x300?text=TrustBridge+Upload`;
   }
 
+  console.log("Cloud Name:", process.env.CLOUDINARY_CLOUD_NAME);
+  console.log("API Key Exists:", !!process.env.CLOUDINARY_API_KEY);
+  console.log("API Secret Exists:", !!process.env.CLOUDINARY_API_SECRET);
+
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
-      { folder, resource_type: 'auto' },
+      {
+        folder,
+        resource_type: "auto",
+      },
       (error, result) => {
-        if (error) reject(new AppError('File upload failed', 500));
-        else resolve(result.secure_url);
+        if (error) {
+          console.error("❌ Cloudinary Error:", error);
+          return reject(new AppError(error.message, 500));
+        }
+
+        console.log("✅ Cloudinary Upload Success:", result.secure_url);
+        resolve(result.secure_url);
       }
     );
+
     stream.end(buffer);
   });
 };
